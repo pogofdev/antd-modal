@@ -982,6 +982,13 @@
   resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.4.0.tgz#c3c5ae543c897caa9c2a68630bed355be5f9990f"
   integrity sha512-JZButFdZ1+/xAfpguQHoabIXkcqRRKpMrWKBkpEZZyxfY9C1DpADFB8PEqGSTeFr135SaTRfKqGKx5xSCLI7ZQ==
 
+"@cubetiq/antd-modal@*":
+  version "0.0.1-alpha.1"
+  resolved "https://registry.yarnpkg.com/@cubetiq/antd-modal/-/antd-modal-0.0.1-alpha.1.tgz#ed88b21ea8cc59298f8b96b505401a5f8dfe7a67"
+  integrity sha512-mnh03O6SvHYa6j/h5LM+MuxdCr/jZ3BIcpwCQ7Zwn47LMqg9Bp42SpyKfuqCNyvKBKSbeRQOczn+ogEjsB0rtw==
+  dependencies:
+    react-uid "^2.3.1"
+
 "@emotion/hash@^0.8.0":
   version "0.8.0"
   resolved "https://registry.npmjs.org/@emotion/hash/-/hash-0.8.0.tgz#bbbff68978fefdbe68ccb533bc8cbe1d1afb5413"

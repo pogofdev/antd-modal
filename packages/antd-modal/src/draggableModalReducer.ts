@@ -15,6 +15,8 @@ export interface ModalState {
     height: number
     zIndex: number
     visible: boolean
+    minWidth?: number
+    minHeight?: number
 }
 
 // State of all modals.
@@ -42,19 +44,28 @@ export const initialModalState: ModalState = {
     height: 800,
     zIndex: 0,
     visible: false,
+    minWidth:undefined,
+    minHeight:undefined
 }
 
 const getInitialModalState = ({
     initialWidth = initialModalState.width,
     initialHeight = initialModalState.height,
+    minWidth ,
+    minHeight,
 }: {
     initialWidth?: number
     initialHeight?: number
+    minWidth?: number
+    minHeight?: number
 }) => {
+    
     return {
         ...initialModalState,
-        width: initialWidth,
-        height: initialHeight,
+        width: minWidth !== undefined ? minWidth > initialWidth ? minWidth : initialWidth : initialWidth,
+        height: minHeight !== undefined ? minHeight > initialHeight ? minHeight : initialHeight:initialHeight,
+        minWidth,
+        minHeight,
     }
 }
 
@@ -63,7 +74,7 @@ export type Action =
     | { type: 'hide'; id: ModalID }
     | { type: 'focus'; id: ModalID }
     | { type: 'unmount'; id: ModalID }
-    | { type: 'mount'; id: ModalID; intialState: { initialWidth?: number; initialHeight?: number } }
+    | { type: 'mount'; id: ModalID; intialState: { initialWidth?: number; initialHeight?: number, minWidth?: number, minHeight?: number } }
     | { type: 'windowResize'; size: { width: number; height: number } }
     | { type: 'drag'; id: ModalID; x: number; y: number }
     | {
@@ -73,6 +84,8 @@ export type Action =
           y: number
           width: number
           height: number
+          minWidth?: number
+          minHeight?: number
       }
 
 export const getModalState = ({
@@ -80,12 +93,16 @@ export const getModalState = ({
     id,
     initialWidth,
     initialHeight,
+    minWidth,
+    minHeight,
 }: {
     state: ModalsState
     id: ModalID
     initialWidth?: number
     initialHeight?: number
-}): ModalState => state.modals[id] || getInitialModalState({ initialWidth, initialHeight })
+    minWidth?: number
+    minHeight?: number
+}): ModalState => state.modals[id] || getInitialModalState({ initialWidth, initialHeight,minWidth,minHeight })
 
 const getNextZIndex = (state: ModalsState, id: string): number =>
     getModalState({ state, id }).zIndex === state.maxZIndex ? state.maxZIndex : state.maxZIndex + 1
@@ -123,13 +140,14 @@ const clampResize = (
 export const draggableModalReducer = (state: ModalsState, action: Action): ModalsState => {
     switch (action.type) {
         case 'resize':
+            
             const size = clampResize(
                 state.windowSize.width,
                 state.windowSize.height,
                 action.x,
                 action.y,
-                action.width,
-                action.height,
+                action.minWidth !== undefined ? action.minWidth < action.width ? action.width : action.minWidth : action.width,
+                action.minHeight !== undefined ? action.minHeight < action.height ? action.height : action.minHeight : action.height,
             )
             return {
                 ...state,
@@ -226,6 +244,7 @@ export const draggableModalReducer = (state: ModalsState, action: Action): Modal
         }
         case 'mount':
             const initialState = getInitialModalState(action.intialState)
+            
             return {
                 ...state,
                 maxZIndex: state.maxZIndex + 1,
@@ -254,6 +273,7 @@ export const draggableModalReducer = (state: ModalsState, action: Action): Modal
                     if (!modalState.visible) {
                         return modalState
                     }
+                    
                     const position = clampDrag(
                         state.windowSize.width,
                         state.windowSize.height,
@@ -267,8 +287,11 @@ export const draggableModalReducer = (state: ModalsState, action: Action): Modal
                         state.windowSize.height,
                         position.x,
                         position.y,
-                        modalState.width,
-                        modalState.height,
+
+                        // modalState.width,
+                        // modalState.height,
+                        modalState.minWidth !== undefined ? modalState.minWidth < modalState.width ? modalState.width : modalState.minWidth : modalState.width,
+                        modalState.minHeight !== undefined ? modalState.minHeight < modalState.height ? modalState.height : modalState.minHeight : modalState.height,
                     )
                     return {
                         ...modalState,

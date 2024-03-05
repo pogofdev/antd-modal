@@ -16,6 +16,9 @@ interface ContextProps extends DraggableModalContextMethods {
     modalState: ModalState
     initialWidth?: number
     initialHeight?: number
+    minWidth?: number
+    minHeight?: number
+    onRezise?: (width: number, height: number) => void
 }
 
 export type DraggableModalInnerProps = ModalProps & { children?: React.ReactNode } & ContextProps
@@ -24,30 +27,33 @@ function DraggableModalInnerNonMemo({
     id,
     modalState,
     dispatch,
-    visible,
+    open,
     children,
     title,
     initialWidth,
     initialHeight,
+    minWidth,
+    minHeight,
+    onRezise,
     ...otherProps
 }: DraggableModalInnerProps) {
     // Call on mount and unmount.
     useEffect(() => {
-        dispatch({ type: 'mount', id, intialState: { initialWidth, initialHeight } })
-        return () => dispatch({ type: 'unmount', id })
+        dispatch({ type: 'mount', id, intialState: { initialWidth, initialHeight, minWidth, minHeight } })
+        return () => dispatch({ type: 'unmount', id,  })
     }, [dispatch, id, initialWidth, initialHeight])
 
     // Bring this to the front if it's been opened with props.
-    const visiblePrevious = usePrevious(visible)
+    const visiblePrevious = usePrevious(open)
     useEffect(() => {
-        if (visible !== visiblePrevious) {
-            if (visible) {
+        if (open !== visiblePrevious) {
+            if (open) {
                 dispatch({ type: 'show', id })
             } else {
                 dispatch({ type: 'hide', id })
             }
         }
-    }, [visible, visiblePrevious, id, dispatch])
+    }, [open, visiblePrevious, id, dispatch])
 
     const { zIndex, x, y, width, height } = modalState
 
@@ -70,8 +76,8 @@ function DraggableModalInnerNonMemo({
     ])
 
     const onMouseDrag = useDrag(x, y, onDragWithID)
-    const onMouseResize = useResize(x, y, width, height, onResizeWithID)
-
+    const onMouseResize = useResize(x, y, width, height, onResizeWithID, minHeight, minWidth)
+    
     const titleElement = useMemo(
         () => (
             <div
@@ -85,6 +91,12 @@ function DraggableModalInnerNonMemo({
         [onMouseDrag, onFocus, title],
     )
 
+    useEffect(() => {
+        if(onRezise){
+            onRezise(width,height)
+        }
+       
+    }, [width, height])
     return (
         <Modal
             wrapClassName="ant-design-draggable-modal"
@@ -95,11 +107,13 @@ function DraggableModalInnerNonMemo({
             maskClosable={false}
             zIndex={zIndex}
             title={titleElement}
-            visible={visible}
+            open={open}
             {...otherProps}
         >
             {children}
-            <ResizeHandle onMouseDown={onMouseResize} />
+            <ResizeHandle onMouseDown={(e)=>{
+                console.log('onMouseResize',e)
+                onMouseResize(e)}} />
         </Modal>
     )
 }

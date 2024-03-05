@@ -1,4 +1,4 @@
-import { DraggableModal, DraggableModalProps, DraggableModalProvider } from '@cubetiq/antd-modal'
+import { DraggableModal, DraggableModalProps, DraggableModalProvider } from '../../antd-modal/src/index'
 import '@cubetiq/antd-modal/dist/index.css'
 import { Breadcrumb, Button, Layout } from 'antd'
 import { useCallback, useState } from 'react'
@@ -19,7 +19,11 @@ function ModalWithButton(props: ModalWithButtonProps) {
             <Button onClick={onToggle} type={visible ? 'dashed' : 'primary'} style={{ margin: 10 }}>
                 {visible ? `Close ${props.title}` : `Open ${props.title}`}
             </Button>
-            <DraggableModal open={visible} onOk={onOk} onCancel={onCancel} {...props}>
+            <DraggableModal 
+            open={visible} onOk={onOk} onCancel={onCancel}  {...props} onRezise={(width,height) => {console.log(width,height)}} 
+            minHeight={500}
+            minWidth={1000}
+            >
                 Body text.
             </DraggableModal>
         </>
