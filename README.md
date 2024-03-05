@@ -69,7 +69,7 @@ const ModalWithButton = () => {
     return (
         <>
             <Button onClick={onOk}>Open</Button>
-            <DraggableModal open={visible} onOk={onOk} onCancel={onCancel}>
+              <DraggableModal open={visible} onOk={onOk} onCancel={onCancel} onResize={() => {}}>
                 Body text.
             </DraggableModal>
         </>
