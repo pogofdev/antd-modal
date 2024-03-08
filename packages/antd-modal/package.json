@@ -1,6 +1,6 @@
 {
     "name": "@pogofdev/antd-modal",
-    "version": "0.0.1-alpha.4",
+    "version": "0.0.1-alpha.6",
     "description": "Modal from Ant Design, draggable, resizable.",
     "homepage": "https://github.com/pogofdev/antd-modal#readme",
     "repository": {

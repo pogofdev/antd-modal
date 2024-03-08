@@ -112,7 +112,7 @@ function DraggableModalInnerNonMemo({
         >
             {children}
             <ResizeHandle onMouseDown={(e)=>{
-                console.log('onMouseResize',e)
+                // console.log('onMouseResize',e)
                 onMouseResize(e)}} />
         </Modal>
     )

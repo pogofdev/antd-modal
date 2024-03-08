@@ -59,7 +59,7 @@ NOTE: You must use `react@18` and `react-dom@18` or higher and `antd@5` or highe
 ```tsx
 import { useState, useCallback } from 'react'
 import { Button } from 'antd'
-import { DraggableModal, DraggableModalProvider } from '@cubetiq/antd-modal'
+import { DraggableModal, DraggableModalProvider } from './packages/antd-modal/src/index.ts'
 import '@cubetiq/antd-modal/dist/index.css'
 
 const ModalWithButton = () => {
