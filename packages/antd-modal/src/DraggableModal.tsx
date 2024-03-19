@@ -12,6 +12,7 @@ export interface DraggableModalProps extends ModalProps {
     initialHeight?: number
     minWidth?: number
     minHeight?: number
+    maskColor?: string
     onRezise?: (width: number, height: number) => void
 }
 
@@ -40,5 +41,5 @@ export const DraggableModal: FunctionComponent<DraggableModalProps> = (
     // We do this so that we don't re-render all modals for every state change.
     // DraggableModalInner uses React.memo, so it only re-renders if
     // if props change (e.g. modalState).
-    return <DraggableModalInner id={props.windowId} dispatch={dispatch} modalState={modalState} {...props} onRezise={props.onRezise} />
+    return <DraggableModalInner id={props.windowId}  dispatch={dispatch} modalState={modalState} modalsState={state} {...props} onRezise={props.onRezise} />
 }

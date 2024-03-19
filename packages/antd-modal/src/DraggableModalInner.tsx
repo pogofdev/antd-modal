@@ -6,7 +6,7 @@ import { ResizeHandle } from './ResizeHandle'
 import { useDrag } from './useDrag'
 import { DraggableModalContextMethods } from './DraggableModalContext'
 import { usePrevious } from './usePrevious'
-import { ModalID, ModalState } from './draggableModalReducer'
+import { ModalID, ModalState, ModalsState } from './draggableModalReducer'
 import { useResize } from './useResize'
 
 const modalStyle: React.CSSProperties = { margin: 0, paddingBottom: 0, pointerEvents: 'auto' }
@@ -14,7 +14,9 @@ const modalStyle: React.CSSProperties = { margin: 0, paddingBottom: 0, pointerEv
 interface ContextProps extends DraggableModalContextMethods {
     id: ModalID
     modalState: ModalState
+    modalsState: ModalsState
     initialWidth?: number
+    maskColor?: string
     initialHeight?: number
     minWidth?: number
     minHeight?: number
@@ -26,6 +28,7 @@ export type DraggableModalInnerProps = ModalProps & { children?: React.ReactNode
 function DraggableModalInnerNonMemo({
     id,
     modalState,
+    modalsState,
     dispatch,
     open,
     children,
@@ -83,7 +86,7 @@ function DraggableModalInnerNonMemo({
             <div
                 className="ant-design-draggable-modal-title"
                 onMouseDown={onMouseDrag}
-                onClick={onFocus}
+                // onClick={onFocus}
             >
                 {title}
             </div>
@@ -97,20 +100,23 @@ function DraggableModalInnerNonMemo({
         }
 
     }, [width, height])
+    console.log('zIndex', modalsState)
     return (
         <Modal
             wrapClassName="ant-design-draggable-modal"
             style={style}
+            // maskStyle={{pointerEvents:zIndex===modalsState.maxZIndex ? 'none' : 'auto', backgroundColor:'#00000012'}}
+            maskStyle={{pointerEvents:'none', backgroundColor:zIndex===modalsState.maxZIndex ? otherProps.maskColor ||'#00000012':'transparent'}}
             width={width}
             destroyOnClose={true}
-            mask={false}
+            mask={otherProps.mask? zIndex===modalsState.maxZIndex: false}
             maskClosable={false}
             zIndex={zIndex}
             title={titleElement}
             open={open}
             {...otherProps}
         >
-            <div style={{height: '100%', width:'100%' }}
+            <div style={{height: '100%', width:'100%', backgroundColor:'white' }}
             onClick={onFocus}>
             
                 {children}

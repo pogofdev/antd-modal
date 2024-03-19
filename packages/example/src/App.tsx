@@ -45,7 +45,10 @@ function ModalWithButton(props: ModalWithButtonProps) {
             <Button onClick={onToggle} type={visible ? 'dashed' : 'primary'} style={{ margin: 10 }}>
                 {visible ? `Close ${props.title}` : `Open ${props.title}`}
             </Button>
-            <DraggableModal 
+            <DraggableModal
+                        mask={true}
+                        maskClosable={true} 
+                        maskColor="rgba(0,0,0,0.5)"
             open={visible} onOk={onOk} onCancel={onCancel}  {...props} onRezise={(width,height) => {console.log(width,height)}} 
             minHeight={500}
             minWidth={1000}

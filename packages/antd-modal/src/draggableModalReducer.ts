@@ -17,6 +17,7 @@ export interface ModalState {
     open: boolean
     minWidth?: number
     minHeight?: number
+    minimize?: boolean
 }
 
 // State of all modals.
@@ -97,6 +98,16 @@ export type Action =
         //   minWidth?: number
         //   minHeight?: number
       }
+    | {
+          type: 'maximize'
+          id: ModalID
+        //   x: number
+        //   y: number
+          width: number
+          height: number
+        //   minWidth?: number
+        //   minHeight?: number
+      }
 
 export const getModalState = ({
     state,
@@ -116,6 +127,7 @@ export const getModalState = ({
 
 const getNextZIndex = (state: ModalsState, id: string): number =>
     getModalState({ state, id }).zIndex === state.maxZIndex ? state.maxZIndex : state.maxZIndex + 1
+
 
 const clampDrag = (
     windowWidth: number,
@@ -167,6 +179,7 @@ export const draggableModalReducer = (state: ModalsState, action: Action): Modal
                     [action.id]: {
                         ...state.modals[action.id],
                         ...size,
+                        minimize: false,
                         zIndex: getNextZIndex(state, action.id),
                     },
                 },
@@ -181,18 +194,48 @@ export const draggableModalReducer = (state: ModalsState, action: Action): Modal
                 action.width,
                 action.height,
             )
+            
             return {
                 ...state,
                 maxZIndex: getNextZIndex(state, action.id),
                 modals: {
                     ...state.modals,
                     [action.id]: {
+                       
                         ...state.modals[action.id],
                         ...sizex,
-                        zIndex: getNextZIndex(state, action.id),
+                        zIndex: getNextZIndex(state, action.id)-1,
+                        minimize: true,
                     },
                 },
             }
+
+        case 'maximize':
+            
+            const mSizex = clampResize(
+                state.windowSize.width,
+                state.windowSize.height,
+                state.modals[action.id].x,
+                state.modals[action.id].y,
+                action.width,
+                action.height,
+            )
+            
+            return {
+                ...state,
+                maxZIndex: getNextZIndex(state, action.id),
+                modals: {
+                    ...state.modals,
+                    [action.id]: {
+                        
+                        ...state.modals[action.id],
+                        ...mSizex,
+                        zIndex: getNextZIndex(state, action.id),
+                        minimize: false,
+                    },
+                },
+            }
+
         case 'drag':
             return {
                 ...state,
@@ -209,7 +252,7 @@ export const draggableModalReducer = (state: ModalsState, action: Action): Modal
                             state.modals[action.id].width,
                             state.modals[action.id].height,
                         ),
-                        zIndex: getNextZIndex(state, action.id),
+                        zIndex:state.modals[action.id].minimize?getNextZIndex(state, action.id)-1 : getNextZIndex(state, action.id),
                     },
                 },
             }
