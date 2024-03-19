@@ -262,7 +262,6 @@ export const draggableModalReducer = (state: ModalsState, action: Action): Modal
                 },
             }
         case 'hide': {
-            debugger
             const modalState = state.modals[action.id]
             return {
                 ...state,

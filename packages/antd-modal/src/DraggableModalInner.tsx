@@ -40,7 +40,7 @@ function DraggableModalInnerNonMemo({
     // Call on mount and unmount.
     useEffect(() => {
         dispatch({ type: 'mount', id, intialState: { initialWidth, initialHeight, minWidth, minHeight } })
-        return () => dispatch({ type: 'unmount', id,  })
+        return () => dispatch({ type: 'unmount', id, })
     }, [dispatch, id, initialWidth, initialHeight])
 
     // Bring this to the front if it's been opened with props.
@@ -77,7 +77,7 @@ function DraggableModalInnerNonMemo({
 
     const onMouseDrag = useDrag(x, y, onDragWithID)
     const onMouseResize = useResize(x, y, width, height, onResizeWithID, minHeight, minWidth)
-    
+
     const titleElement = useMemo(
         () => (
             <div
@@ -92,10 +92,10 @@ function DraggableModalInnerNonMemo({
     )
 
     useEffect(() => {
-        if(onRezise){
-            onRezise(width,height)
+        if (onRezise) {
+            onRezise(width, height)
         }
-       
+
     }, [width, height])
     return (
         <Modal
@@ -110,10 +110,16 @@ function DraggableModalInnerNonMemo({
             open={open}
             {...otherProps}
         >
-            {children}
-            <ResizeHandle onMouseDown={(e)=>{
-                // console.log('onMouseResize',e)
-                onMouseResize(e)}} />
+            <div style={{height: '100%', width:'100%' }}
+            onClick={onFocus}>
+            
+                {children}
+                <ResizeHandle onMouseDown={(e) => {
+                    // console.log('onMouseResize',e)
+                    onMouseResize(e)
+                }} />
+            </div>
+
         </Modal>
     )
 }
